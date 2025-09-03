@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement - Calcul des taxes</title>
+</head>
+
+<body>
+    <h3>
+        Simulation calcul des taxes de ventes au Québec
+    </h3>
+
+    <script>
+        let nMontantAvantTaxes = 100;
+        let nMontantTPS = nMontantAvantTaxes * 0.05;
+        // let nMontantAvecTPS = nMontantAvantTaxes + nMontantTPS;
+        let nMontantTVQ = nMontantAvantTaxes * 0.09975;
+        let nTotal = nMontantAvantTaxes + nMontantTPS + nMontantTVQ;
+
+        // Méthode 1 : avec toFixed()
+        // let sTotalArrondi = nTotal.toFixed(2);
+        // let nTotalArrondi = Number(sTotalArrondi);
+        
+        // Méthode 2 : avec Math.round()
+        let nTotalArrondi = Math.round(nTotal * 100) / 100;
+        let nFraisLivraison = 20;
+
+        console.log("Montant original, tps, tvq, total : ", nMontantAvantTaxes, nMontantTPS, nMontantTVQ, nTotal, nTotalArrondi + nFraisLivraison);
+
+
+    </script>
+</body>
+
+</html>
