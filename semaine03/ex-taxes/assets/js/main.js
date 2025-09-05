@@ -4,12 +4,12 @@ let sProvince = prompt("Quelle est votre province ? (QC: Québec, ou ON: Ontario
 // Variable qui contient la réponse de l'utilisateur TOUT EN MAJUSCULE
 let sCodeProvince = sProvince.toUpperCase();
 
-// Variable qui contiendra le taux de taxes provinciale à appliquer
-let nTauxTaxe;
-
 // Stocker les taux de taxes de vente de chaque province (Québec et Ontario)
 const nTauxTaxeQc = 0.09975;
 const nTauxTaxeOn = 0.08;
+
+// Variable qui contiendra le taux de taxes provinciale à appliquer
+let nTauxTaxe;
 
 // Vérifier quelle province et affecter la bonne valeur du taux de taxe
 if (sCodeProvince == "QC") {
