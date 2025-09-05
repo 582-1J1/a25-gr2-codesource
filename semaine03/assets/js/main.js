@@ -1,18 +1,28 @@
 // Demander à l'utilisateur quelle est sa province (Québec ou Ontario)
-let sProvince = prompt("Quelle est votre province ? (Q: Québec, ou O: Ontario)");
+let sProvince = prompt("Quelle est votre province ? (QC: Québec, ou ON: Ontario)");
 
-console.log("Vous avez choisi : ", sProvince);
+// Variable qui contient la réponse de l'utilisateur TOUT EN MAJUSCULE
+let sCodeProvince = sProvince.toUpperCase();
+
+// Variable qui contiendra le taux de taxes provinciale à appliquer
+let nTauxTaxe;
 
 // Stocker les taux de taxes de vente de chaque province (Québec et Ontario)
 const nTauxTaxeQc = 0.09975;
 const nTauxTaxeOn = 0.08;
 
-
+// Vérifier quelle province et affecter la bonne valeur du taux de taxe
+if (sCodeProvince == "QC") {
+    nTauxTaxe = nTauxTaxeQc;
+}
+if (sCodeProvince == "ON") {
+    nTauxTaxe = nTauxTaxeOn;
+}
 
 let nMontantAvantTaxes = 100;
 let nMontantTPS = nMontantAvantTaxes * 0.05;
 // let nMontantAvecTPS = nMontantAvantTaxes + nMontantTPS;
-let nMontantTVP = nMontantAvantTaxes * 0.09975;
+let nMontantTVP = nMontantAvantTaxes * nTauxTaxe;
 let nTotal = nMontantAvantTaxes + nMontantTPS + nMontantTVP;
 
 // Méthode 1 : avec toFixed()
