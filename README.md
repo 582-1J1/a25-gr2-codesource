@@ -7,10 +7,13 @@
 > :construction: = en cours
 > :heavy_check_mark: = complété
 
-### Semaine 3 :checkered_flag:
->Structures conditionnelles; introduction à *canvas*.
+### Semaine 4 :checkered_flag:
+>Introduction à `canvas`; chargement des images; structures itératives.
 
-### Semaine 2 :construction:
+### Semaine 3 :construction:
+>Structures conditionnelles; `prompt` et `alert`; introduction à `canvas` (remis à la semaine 4 par manque de temps).
+
+### Semaine 2 :heavy_check_mark:
 >Introduction à la programmation : types de valeurs, variables et constantes, affectation, opérateurs.
 
 ### Semaine 1 :heavy_check_mark:
