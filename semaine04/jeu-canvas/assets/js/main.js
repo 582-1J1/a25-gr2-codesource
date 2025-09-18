@@ -47,6 +47,19 @@ oCtx.fillText(sNom, nLargeur-200, 50);
 let oSoleil = new Image(); // Constructeur (d'objets "images")
 oSoleil.src = "assets/images/soleil-rayons.png";
 
-// Dessiner l'image dans le canvas
-oCtx.drawImage(0, 300);
 
+// Détecter lorsque la page a FINI complètement le chargement 
+// de tous les éléments référencés dans le document.
+// window.addEventListener("load", dessinerImage);
+
+// Définition d'une fonction
+// Fonction pour dessiner l'image.
+function dessinerImage() {
+    // Dessiner l'image dans le canvas
+    oCtx.drawImage(oSoleil, 20, 200, 100, 100);
+}
+
+// Appel d'une fonction
+// dessinerImage();
+
+window.addEventListener("load", dessinerImage);
