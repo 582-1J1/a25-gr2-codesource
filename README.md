@@ -7,10 +7,10 @@
 > :construction: = en cours
 > :heavy_check_mark: = complété
 
-### Semaine 4 :checkered_flag:
+### Semaine 4 :construction:
 >Introduction à `canvas`; chargement des images; structures itératives.
 
-### Semaine 3 :construction:
+### Semaine 3 :heavy_check_mark:
 >Structures conditionnelles; `prompt` et `alert`; introduction à `canvas` (remis à la semaine 4 par manque de temps).
 
 ### Semaine 2 :heavy_check_mark:
