@@ -1,0 +1,17 @@
+html {
+    margin: 0;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+}
+
+canvas#jeudedes {
+    border: 5px solid green;
+    border-radius: 10px;
+    background-color: bisque;
+}
