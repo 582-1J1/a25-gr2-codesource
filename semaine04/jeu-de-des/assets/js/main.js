@@ -41,11 +41,21 @@ function init() {
 
 // Instruction de répétition (boucle)
 // Plusieurs types en JS : for, while, for...of
-// let sNombreMax = prompt("Choisir un nombre", "100");
-// console.log("Le nombre : ", sNombreMax);
-// for(let i = 0; i < 100; i++) {
-//     console.log("On est entré dans la boucle : ", i);
-// }
+let sNombreMax = prompt("Choisir un nombre");
+console.log("Le nombre : ", sNombreMax);
+
+// Type 1 : instruction de boucle FOR (POUR)
+for(let i = 0; i < Number(sNombreMax); i++) {
+    console.log("On est entré dans la boucle : ", i);
+}
+
+// Type 2 : instruction de boucle WHILE (TANT QUE)
+let nombreRepetition = 0;
+while (nombreRepetition>=0) {
+    nombreRepetition = Number(prompt("Combien de nombres alétoires voulez-vous ?"));
+    console.log("Le nombre est : ", nombreRepetition);
+}
+
 
 // Nombres aléatoires.
 let sNombreAlea = Math.ceil(Math.random() * 6);
