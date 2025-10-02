@@ -33,14 +33,60 @@ oBoule10.src = "assets/images/boule_10.png";
 let oBoule = new Image();
 
 function init() {
-    // Maintenant, on va dessiner 3 boules aléatoires (parmi les 10) dans le canvas
-    for(let i=0; i<3; i++) {
+    // On veut dessiner 5 boules aléatoires (parmi les 10) dans le 
+    // canvas.
+
+    // Essai 1 : "Tirage avec remise" (donc répétition possible --->>> ne simule 
+    // pas correctement un tirage de loterie)
+    /*
+    for(let i=0; i<5; i++) {
         let nNombreAlea = Math.floor(Math.random()*10) + 1;
         oBoule.src = "assets/images/boule_" + nNombreAlea + ".png";
-        oCtx.drawImage(oBoule, 0, i*100, 100, 100);
+        oCtx.drawImage(oBoule, i*200, 100, 100, 100);
     }
+    */
+    // Essai 2 : "Tirage sans remise" (donc pas de répétition !!!)
+    // Mémoire des numéros distincts qui ont été tirés
+    let sNumerosTires = ""; // ça va ressembler à ça : "7/2/9/10/"
+    let nNombreBoulesChoisies = 0; // initialement 1, puis augmente par 1 chaque fois qu'on retient une autre boule
+    let nNombreRepetitions = 0; // Utile pour comprendre combien d'itération de la boucle on va faire...
+    while (nNombreBoulesChoisies < 7) {
+        // Les deux lignes suivantes sont utiles seulement pour déboguer
+        nNombreRepetitions++;
+        console.log("Répétion exécutée");
+        
+        // On choisi un nombre aléatoire.
+        let nNombreAlea = Math.floor(Math.random()*10) + 1;
+
+        // Si ce nombre n'a jamais été tiré alors : 
+        //  i) On l'ajoute (concaténer) à sNumerosTires
+        //  ii) On assigne l'image correspondante à l'objet oBoule
+        //  iii) On dessine l'objet oBoule dans le canvas
+        //  iv) On incrémente (on ajoute 1) nNombreBoulesChoisies        
+        if(sNumerosTires.indexOf(nNombreAlea + "/")==-1) {
+            // i) On ajoute à la chaine qui mémorise les numéros retenus
+            sNumerosTires = sNumerosTires + nNombreAlea + "/";
+            // Ou, de façon plus courte : 
+            // sNumerosTires += nNombreAlea + "/";
+            // ii) On charge l'url de l'image
+            oBoule.src = "assets/images/boule_" + nNombreAlea + ".png";
+            // iii) On dessine l'image dans le canvas
+            oCtx.drawImage(oBoule, nNombreBoulesChoisies*100, 100, 100, 100);
+            // iv) On incrémente le nombre de boules déjà choisies (retenues)
+            // TRÈS IMPORTANT car c'est ce qui permettra à la boucle de se 
+            // terminer !!!
+            nNombreBoulesChoisies = nNombreBoulesChoisies + 1;
+            // Ou de façon plus courte : 
+            // nNombreBoulesChoisies++;
+            // nNombreBoulesChoisies += 1;
+        }
+    }
+    // Juste pour déboguer (affiche le nombre d'itérations de la boucle)
+    console.log("Nombre de répétitions : " + nNombreRepetitions);
 }
 
+// On attend le chargement complet de la page avant d'appeler la fonction
+// qui permet de dessiner les images dans le canvas.
 window.addEventListener("load", init);
 
 
