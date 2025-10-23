@@ -7,6 +7,9 @@
 > :construction: = en cours
 > :heavy_check_mark: = complété
 
+### Semaine 7 :construction:
+>Fonctions (déclaration, paramètres, valeur de retour).
+
 ### Semaine 5 :heavy_check_mark:
 >Structures itératives (`while`) ; nombres aléatoires distincts.
 
