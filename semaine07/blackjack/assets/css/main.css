@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;   
+}
+
 html {
     height: 100vh;
     margin: 0;
@@ -15,7 +19,7 @@ body {
 
 #scene {
     background: #f8f9fa;
-    border: 2px solid #333;
+    border: 20px solid #333;
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.10);
 }
