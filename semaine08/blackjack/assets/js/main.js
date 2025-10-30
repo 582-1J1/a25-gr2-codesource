@@ -7,52 +7,22 @@
 const oCanvas = document.querySelector("#scene");
 const oCtx = oCanvas.getContext("2d");
 
-// ..........................
-// Utilisation de fonction (faire l'appel de la fonction)
-// Utiliser la fonction pour générer une combinaison de la loterie 6/49
-
-// Récupérer la valeur retournée par la fonction et l'envoyer à la console
-/*
-console.log("Une combinaison de 6/49 (distincts) : "
-    , genererNombresAleatoires(6, 1, 49, true));
-console.log("Une combinaison de 6/49 (distincts) : "
-    , genererNombresAleatoires(6, 1, 49, true));
-console.log("Une combinaison de 6/49 (PAS DISTINCTS) : "
-    , genererNombresAleatoires(6, 1, 49));
-console.log("Une combinaison impossible (15, 100, 13) : "
-    , genererNombresAleatoires(15, 100, 13, false));
-*/
-
-// Déclaration de fonction
-// Définir une fonction très générale qui génère des nombres aléatoires
-// IMPORTANT : Nom de la fonction, noms des paramètres, valeur de retour
 /**
- * Génère des nombres aléatoires avec ou sans remise.
- * @param {Number} nQuantite Nombre de nombres aléatoires demandés.
- * @param {Number} nValMin Valeur minimale.
- * @param {Number} nValMax Valeur maximale.
- * @param {Bolean} bDistincts (optionnel, par défaut false) True si tirage sans remise, false sinon.
- * @returns {String} Chaîne des choix de nombres concaténés avec le séparateur ;.
+ * Simule le tirage d'une carte d'un jeu de carte (représentré par des nombres 
+ * de 1 à 13 (As = 1, 2...10, Valet = 11, Reine = 12, Roi = 13)).
+ * @returns {Number} Nombre aléatoire généré.
  */
-function genererNombresAleatoires(nQuantite, nValMin, nValMax, bDistincts = false) {
-    let sChoix = ";";
-    // Validation de base
-    if(nValMax < nValMin) {
-        // On arrête la fonction et retourne un message d'erreur.
-        return "La valeur maximale ne peut pas être plus petite que la valeur minimale.";
-    }
-    // Si nQuantite est plus grand que l'intervalle entre nValMin et nValMax et bDistincts est vrai.
-    let nbAlea = 0;
-    for(let i=0; i<nQuantite; i++) {
-        nbAlea = Math.floor(Math.random()*(nValMax-nValMin+1)) + nValMin;
-        if(bDistincts == true && sChoix.indexOf(`;${nbAlea};`) > -1) {
-            i--;
-        } else {
-            sChoix += nbAlea + ";";
-        }
-    }
-    // Valeur retournée par la fonction
-    return sChoix;
+function tirerCarte() {
+    return Math.floor(Math.random()*13) + 1;
+}
+
+/**
+ * Calcule la valeur d'une carte (Maximum 10).
+ * @param {Number} nCarte Carte dont on veut la valeur (1 à 13).
+ * @returns {Number} Valeur de la carte (1 à 10).
+ */
+function calculerValeurCarte(nCarte) {
+    return Math.min(nCarte, 10);
 }
 
 
@@ -93,7 +63,7 @@ function ditAllo() {
  * @param {String} sTexte Texte sur le bouton.
  * @returns void;
  */
-function dessinerBouton(nPosX, nPosY, nLargeur, nHauteur, sFond, sTexte) {
+function dessinerBouton(nPosX, nPosY, nLargeur=100, nHauteur=50, sFond = 'darkgrey', sTexte = 'Bouton') {
     oCtx.fillStyle = sFond;
     oCtx.fillRect(nPosX, nPosY, nLargeur, nHauteur, 10);
     oCtx.fillStyle = "#ffffff";
@@ -107,3 +77,7 @@ function dessinerBouton(nPosX, nPosY, nLargeur, nHauteur, sFond, sTexte) {
 dessinerBouton(50, 300, 150, 50, "#b22222", "Rester");
 // Bouton Tirer (fond vert foncé)
 dessinerBouton(300, 300, 150, 50, "#228b22", "Tirer");
+
+// Bouton générique
+
+dessinerBouton(10, 10);
