@@ -7,6 +7,49 @@
 const oCanvas = document.querySelector("#scene");
 const oCtx = oCanvas.getContext("2d");
 
+// Variables globales
+// Info générale
+const nLargeurCanvas = oCanvas.width;
+const nHauteurCanvas = oCanvas.height;
+const nCentre = nLargeurCanvas/2;
+const nMilieu = nHauteurCanvas/2;
+
+window.addEventListener("load", demarrer);
+
+// nIdMinuterie définie comme variable GLOBALE : Visible dans les fonctions (partout)
+let nIdMinuterie;
+function demarrer() {
+    // Amélioration : RequestAnimationFrame
+    
+    nIdMinuterie = setInterval(introJeu, 1000/60);
+    console.log("Identifiant de la minuterie : ", nIdMinuterie);
+    
+
+    // introJeu();
+}
+
+let nPosXTexte = -300;
+function introJeu() {
+    oCtx.clearRect(0, 0, nLargeurCanvas, nHauteurCanvas);
+    console.log("Appel de la fonction intro... ");
+    
+    oCtx.fillStyle = "black";
+    oCtx.font = "60px Arial";
+    oCtx.textAlign = "center";
+    oCtx.textBaseline = "middle";
+    oCtx.fillText("B L A C K J A C K", nPosXTexte, nMilieu);
+    // Condition pour arrêter de modifier la position en X
+    // Ajouter le pas jusqu'à atteindre la position souhaitée
+    if(nPosXTexte < nCentre) {
+        nPosXTexte += 5;
+    }
+    else {
+        // Arrêter la minuterie
+        clearInterval(nIdMinuterie);
+    }
+}
+
+
 /**
  * Simule le tirage d'une carte d'un jeu de carte (représentré par des nombres 
  * de 1 à 13 (As = 1, 2...10, Valet = 11, Reine = 12, Roi = 13)).
@@ -42,16 +85,7 @@ function gererClic(evt) {
     if(x>50 && x<200 && y>300 && y<350) {
         console.log("Bouton RESTER cliqué");
     }
-    
-    
 }
-
-
-function ditAllo() {
-    alert("Allo !");
-}
-
-// ditAllo();
 
 /**
  * Dessine un bouton d'action dans le canvas.
@@ -73,11 +107,14 @@ function dessinerBouton(nPosX, nPosY, nLargeur=100, nHauteur=50, sFond = 'darkgr
     oCtx.fillText(sTexte, nPosX + nLargeur / 2, nPosY + nHauteur / 2);
 }
 
+/*
+
 // Bouton Rester (fond rouge foncé)
 dessinerBouton(50, 300, 150, 50, "#b22222", "Rester");
 // Bouton Tirer (fond vert foncé)
 dessinerBouton(300, 300, 150, 50, "#228b22", "Tirer");
 
-// Bouton générique
-
+// Bouton générique (test)
 dessinerBouton(10, 10);
+
+*/
