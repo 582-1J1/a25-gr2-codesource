@@ -7,8 +7,11 @@
 > :construction: = en cours
 > :heavy_check_mark: = complété
 
-### Semaine 7 :construction:
->Fonctions (déclaration, paramètres, valeur de retour).
+### Semaine 7 :checkered_flag:
+>Animation (minuteries JS) et boucle de jeu.
+
+### Semaine 7 :heavy_check_mark:
+>Fonctions (déclaration, paramètres, valeur de retour). Gestion des événements de la souris (ou du dispositif de *pointeur* en général).
 
 ### Semaine 5 :heavy_check_mark:
 >Structures itératives (`while`) ; nombres aléatoires distincts.
