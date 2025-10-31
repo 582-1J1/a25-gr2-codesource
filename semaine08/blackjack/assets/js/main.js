@@ -7,31 +7,80 @@
 const oCanvas = document.querySelector("#scene");
 const oCtx = oCanvas.getContext("2d");
 
-// Variables globales
+/******** Variables globales **********/
 // Info générale
 const nLargeurCanvas = oCanvas.width;
 const nHauteurCanvas = oCanvas.height;
 const nCentre = nLargeurCanvas/2;
 const nMilieu = nHauteurCanvas/2;
 
+// État/Boucle du jeu
+let sEtat = "";
+let nIdMinuterie;
+
+// Écran "Intro"
+let nPosXTexte = -300;
+
+// Images
+const oImgCarte1 = new Image();
+oImgCarte1.src = "assets/images/1.png";
+const oImgCarte2 = new Image();
+oImgCarte2.src = "assets/images/2.png";
+const oImgCarte3 = new Image();
+oImgCarte3.src = "assets/images/3.png";
+const oImgCarte4 = new Image();
+oImgCarte4.src = "assets/images/4.png";
+const oImgCarte5 = new Image();
+oImgCarte5.src = "assets/images/5.png";
+const oImgCarte6 = new Image();
+oImgCarte6.src = "assets/images/6.png";
+const oImgCarte7 = new Image();
+oImgCarte7.src = "assets/images/7.png";
+const oImgCarte8 = new Image();
+oImgCarte8.src = "assets/images/8.png";
+const oImgCarte9 = new Image();
+oImgCarte9.src = "assets/images/9.png";
+const oImgCarte10 = new Image();
+oImgCarte10.src = "assets/images/10.png";
+const oImgCarte11 = new Image();
+oImgCarte11.src = "assets/images/11.png";
+const oImgCarte12 = new Image();
+oImgCarte12.src = "assets/images/12.png";
+const oImgCarte13 = new Image();
+oImgCarte13.src = "assets/images/13.png";
+const oImgCarteDos = new Image();
+oImgCarteDos.src = "assets/images/dos.png";
+
+/************************ Gestion des événements ******************************/
+// Chargement de la page.
 window.addEventListener("load", demarrer);
 
-// nIdMinuterie définie comme variable GLOBALE : Visible dans les fonctions (partout)
-let nIdMinuterie;
+
 function demarrer() {
-    // Amélioration : RequestAnimationFrame
-    
-    nIdMinuterie = setInterval(introJeu, 1000/60);
+    sEtat = "intro";
+    nIdMinuterie = setInterval(boucleJeu, 1000/120);
     console.log("Identifiant de la minuterie : ", nIdMinuterie);
     
 
     // introJeu();
 }
 
-let nPosXTexte = -300;
-function introJeu() {
+function boucleJeu() {
     oCtx.clearRect(0, 0, nLargeurCanvas, nHauteurCanvas);
-    console.log("Appel de la fonction intro... ");
+    if(sEtat == "intro") {
+        introJeu();
+    }
+    else if(sEtat == "partie") {
+        partieJeu();
+    }
+    else if(sEtat == "fin") {
+        finJeu();
+    }
+}
+
+// Écran 1 : intro animée
+function introJeu() {
+    console.log("Dans introJeu...");
     
     oCtx.fillStyle = "black";
     oCtx.font = "60px Arial";
@@ -44,11 +93,37 @@ function introJeu() {
         nPosXTexte += 5;
     }
     else {
+        oCtx.font = "24px Arial";
+        oCtx.fillText("Appuyer sur une touche pour commencer le jeu.", nCentre, nMilieu + 50);
+    
         // Arrêter la minuterie
-        clearInterval(nIdMinuterie);
+        // clearInterval(nIdMinuterie);
+
+        // Faire apparaître les cartes
+        oCtx.save();
+        oCtx.rotate(25*Math.PI/180);
+        oCtx.drawImage(oImgCarte13, 0, 0, 100, 150);
+        oCtx.restore();
+
+        oCtx.save();
+        oCtx.rotate(-30*Math.PI/180);
+        oCtx.drawImage(oImgCarte9, nCentre + 10, nMilieu - 10, 100, 150);
+        oCtx.restore();
+        
     }
 }
 
+// Écran 2 : partie de jeu.
+function partieJeu() {
+    console.log("Dans partieJeu...");
+    
+
+}
+
+// Écran 3 (et final) : affichage des résultats.
+function finJeu() {
+    console.log("Dans finJeu...");
+}
 
 /**
  * Simule le tirage d'une carte d'un jeu de carte (représentré par des nombres 
