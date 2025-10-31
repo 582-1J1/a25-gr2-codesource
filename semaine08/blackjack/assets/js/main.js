@@ -60,7 +60,10 @@ oImgTable.src = "assets/images/table-bg.jpg";
 // Chargement de la page.
 window.addEventListener("load", demarrer);
 // Clics dans le canvas
-oCanvas.addEventListener("click", gererClic);
+oCanvas.addEventListener("click", function(evt) {
+    
+});
+
 // Touches clavier
 // Gérer l'événement appuyer sur une touche
 // document.addEventListener("keypress", () => sEtat = "partie");
@@ -159,23 +162,6 @@ function tirerCarte() {
  */
 function calculerValeurCarte(nCarte) {
     return Math.min(nCarte, 10);
-}
-
-
-
-function gererClic(evt) {
-    //console.log("On a cliqué !");
-    // console.log("Objet événement reçu dans le paramètre evt : ", evt);
-    // console.log("Position X du clic dans le canvas : ", evt.offsetX);
-    // console.log("Touche ALT : ", evt.altKey);
-    
-    const x = evt.offsetX;
-    const y = evt.offsetY;
-
-    // Distinguer le bouton RESTER
-    if(x>50 && x<200 && y>300 && y<350) {
-        console.log("Bouton RESTER cliqué");
-    }
 }
 
 /**
