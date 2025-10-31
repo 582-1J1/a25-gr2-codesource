@@ -20,8 +20,10 @@ let nIdMinuterie;
 
 // Écran "Intro"
 let nPosXTexte = -300;
+// Autres variables pour les angles de rotation de chaque cartes dans l'intro;
 
 // Images
+// Les cartes
 const oImgCarte1 = new Image();
 oImgCarte1.src = "assets/images/1.png";
 const oImgCarte2 = new Image();
@@ -50,11 +52,26 @@ const oImgCarte13 = new Image();
 oImgCarte13.src = "assets/images/13.png";
 const oImgCarteDos = new Image();
 oImgCarteDos.src = "assets/images/dos.png";
+// La table du jeu
+const oImgTable = new Image();
+oImgTable.src = "assets/images/table-bg.jpg";
 
 /************************ Gestion des événements ******************************/
 // Chargement de la page.
 window.addEventListener("load", demarrer);
-
+// Clics dans le canvas
+oCanvas.addEventListener("click", gererClic);
+// Touches clavier
+// Gérer l'événement appuyer sur une touche
+// document.addEventListener("keypress", () => sEtat = "partie");
+// document.addEventListener("keypress", function() {
+//     sEtat = "partie"
+// });
+document.addEventListener("keypress", function(evt) {
+    if(sEtat=="intro" && evt.code == "Space") {
+        sEtat = "partie";
+    }
+});
 
 function demarrer() {
     sEtat = "intro";
@@ -95,7 +112,7 @@ function introJeu() {
     else {
         oCtx.font = "24px Arial";
         oCtx.fillText("Appuyer sur une touche pour commencer le jeu.", nCentre, nMilieu + 50);
-    
+
         // Arrêter la minuterie
         // clearInterval(nIdMinuterie);
 
@@ -116,7 +133,8 @@ function introJeu() {
 // Écran 2 : partie de jeu.
 function partieJeu() {
     console.log("Dans partieJeu...");
-    
+    // Image de fond (table du BlackJack)
+    oCtx.drawImage(oImgTable, 0, 0, nLargeurCanvas, nHauteurCanvas);
 
 }
 
@@ -144,8 +162,6 @@ function calculerValeurCarte(nCarte) {
 }
 
 
-// Exemples de gestion des événements
-oCanvas.addEventListener("click", gererClic);
 
 function gererClic(evt) {
     //console.log("On a cliqué !");

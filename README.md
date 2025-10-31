@@ -7,7 +7,7 @@
 > :construction: = en cours
 > :heavy_check_mark: = complété
 
-### Semaine 7 :checkered_flag:
+### Semaine 8 :heavy_check_mark:
 >Animation (minuteries JS) et boucle de jeu.
 
 ### Semaine 7 :heavy_check_mark:
