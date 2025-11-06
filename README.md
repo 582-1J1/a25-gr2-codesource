@@ -7,6 +7,9 @@
 > :construction: = en cours
 > :heavy_check_mark: = complété
 
+### Semaine 9 :construction:
+>Stuctures de données : tableaux (`Array`) et objets (`Object`) JavaScript.
+
 ### Semaine 8 :heavy_check_mark:
 >Animation (minuteries JS) et boucle de jeu.
 
