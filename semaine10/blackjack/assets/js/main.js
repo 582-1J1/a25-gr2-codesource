@@ -9,29 +9,20 @@ const oCtx = oCanvas.getContext("2d");
 
 /******** Variables globales **************************************************/
 // Info générale
-const nLargeurCanvas = oCanvas.width;
-const nHauteurCanvas = oCanvas.height;
-const nCentre = nLargeurCanvas/2;
-const nMilieu = nHauteurCanvas/2;
-
-// État/Boucle du jeu
-let sEtat = "";
-let nIdMinuterie;
-
-// Écran "Intro"
-let nPosXTexte = -300;
-let aAnglesCartes = [0,0,0,0];
-// Autres variables pour les angles de rotation de chaque cartes dans l'intro;
-
+const oDimCanvas = {
+    largeur: oCanvas.width,
+    hauteur: oCanvas.height,
+    centre: oCanvas.width / 2,
+    milieu: oCanvas.height / 2
+};
 // Images
 // Les cartes
 let aImages = [];
-for(let i=1; i <= 13; i++) {
+for (let i = 1; i <= 13; i++) {
     aImages[i] = new Image();
     aImages[i].src = `assets/images/${i}.png`; // interpoler
     // aImages[i].src = 'assets/images/' + i + '.png'; // concaténer
 }
-
 // Dos d'une carte
 const oImgCarteDos = new Image();
 oImgCarteDos.src = "assets/images/dos.png";
@@ -39,41 +30,53 @@ oImgCarteDos.src = "assets/images/dos.png";
 const oImgTable = new Image();
 oImgTable.src = "assets/images/table-bg.jpg";
 
+// État/Boucle du jeu
+let sEtat = "";
+let nIdMinuterie;
+
+// Écran "Intro"
+let nPosXTexte = -300;
+let aAnglesCartes = [0, 0, 0, 0];
+// Autres variables pour les angles de rotation de chaque cartes dans l'intro;
+
+// Écran "Partie du jeu"
+let bTirageInitial = false;
+let oCartesTirees = {
+    joueur: {
+        main: []
+    },
+    croupier: {
+        main: []
+    }
+};
+
+
 /************************ Gestion des événements ******************************/
 // Chargement de la page.
 window.addEventListener("load", demarrer);
 // Clics dans le canvas
-oCanvas.addEventListener("click", function(evt) {
-    
+oCanvas.addEventListener("click", function (evt) {
+
 });
 
-// Touches clavier
-// Gérer l'événement appuyer sur une touche
-// document.addEventListener("keypress", () => sEtat = "partie");
-// document.addEventListener("keypress", function() {
-//     sEtat = "partie"
-// });
-document.addEventListener("keypress", function(evt) {
-    if(sEtat=="intro" && evt.code == "Space") {
-        sEtat = "partie";
-    }
-});
+
+/************************* FONCTIONS ******************************************/
 
 function demarrer() {
     sEtat = "intro";
-    nIdMinuterie = setInterval(boucleJeu, 1000/60);
+    nIdMinuterie = setInterval(boucleJeu, 1000 / 60);
     console.log("Identifiant de la minuterie : ", nIdMinuterie);
 }
 
 function boucleJeu() {
-    oCtx.clearRect(0, 0, nLargeurCanvas, nHauteurCanvas);
-    if(sEtat == "intro") {
+    oCtx.clearRect(0, 0, oDimCanvas.largeur, oDimCanvas.hauteur);
+    if (sEtat == "intro") {
         introJeu();
     }
-    else if(sEtat == "partie") {
+    else if (sEtat == "partie") {
         partieJeu();
     }
-    else if(sEtat == "fin") {
+    else if (sEtat == "fin") {
         finJeu();
     }
 }
@@ -81,38 +84,50 @@ function boucleJeu() {
 // Écran 1 : intro animée
 function introJeu() {
     console.log("Dans introJeu...");
-    
+
     oCtx.fillStyle = "black";
     oCtx.font = "60px Arial";
     oCtx.textAlign = "center";
     oCtx.textBaseline = "middle";
-    oCtx.fillText("B L A C K J A C K", nPosXTexte, nMilieu);
+    oCtx.fillText("B L A C K J A C K", nPosXTexte, oDimCanvas.milieu);
     // Condition pour arrêter de modifier la position en X
     // Ajouter le pas jusqu'à atteindre la position souhaitée
-    if(nPosXTexte < nCentre) {
+    if (nPosXTexte < oDimCanvas.centre) {
         nPosXTexte += 5;
     }
     else {
         oCtx.font = "24px Arial";
-        oCtx.fillText("Appuyer sur une touche pour commencer le jeu.", nCentre, nMilieu + 50);
+        oCtx.fillText("Appuyer sur une touche pour commencer le jeu.", oDimCanvas.centre, oDimCanvas.milieu + 50);
 
         // Arrêter la minuterie
         // clearInterval(nIdMinuterie);
 
         animerRotationCarte(0, aImages[13], 25);
-        animerRotationCarte(1, oImgCarteDos, -40, nCentre+10, nMilieu+50);
-        // animerRotationCarte(2, oImgCarteDos,);
-        // animerRotationCarte(3, aImages[9],);
+        animerRotationCarte(1, oImgCarteDos, -40, oDimCanvas.centre + 10, oDimCanvas.milieu + 50);
+        animerRotationCarte(2, oImgCarteDos, -30, -250, 300);
+        animerRotationCarte(3, aImages[9], 15, 900, 250);
+
+        // Touches clavier
+        // Gérer l'événement appuyer sur une touche
+        // document.addEventListener("keypress", () => sEtat = "partie");
+        // document.addEventListener("keypress", function() {
+        //     sEtat = "partie"
+        // });
+        document.addEventListener("keypress", function (evt) {
+            if (sEtat == "intro" && evt.code == "Space") {
+                sEtat = "partie";
+            }
+        });
     }
 }
 
-function animerRotationCarte(nItem, nCarte, angleFinal, nPosX=0, nPosY=0) {
+function animerRotationCarte(nItem, nCarte, angleFinal, nPosX = 0, nPosY = 0) {
     oCtx.save();
-    oCtx.rotate(aAnglesCartes[nItem] * Math.PI/180);
-    if(angleFinal>0 && aAnglesCartes[nItem] < angleFinal) {
+    oCtx.rotate(aAnglesCartes[nItem] * Math.PI / 180);
+    if (angleFinal > 0 && aAnglesCartes[nItem] < angleFinal) {
         aAnglesCartes[nItem] += 2;
     }
-    else if(angleFinal<0 && aAnglesCartes[nItem] > angleFinal) {
+    else if (angleFinal < 0 && aAnglesCartes[nItem] > angleFinal) {
         aAnglesCartes[nItem] -= 2;
     }
     oCtx.drawImage(nCarte, nPosX, nPosY, 100, 150);
@@ -123,22 +138,32 @@ function animerRotationCarte(nItem, nCarte, angleFinal, nPosX=0, nPosY=0) {
 function partieJeu() {
     console.log("Dans partieJeu...");
     // Image de fond (table du BlackJack)
-    oCtx.drawImage(oImgTable, 0, 0, nLargeurCanvas, nHauteurCanvas);
+    oCtx.drawImage(oImgTable, 0, 0, oDimCanvas.largeur, oDimCanvas.hauteur);
+
+    // Les boutons "piocher" et "rester"
+    dessinerBouton(400, 540, 150, 40, "#024802ff", "Piocher");
+    dessinerBouton(600, 540, 150, 40, "#8f1803ff", "Rester");
+
+    // Tirage initiale : une seule fois !!!!
+    // 2 cartes pour le joueur et 2 cartes pour le croupier
+    if(bTirageInitial==false) {
+        tirerCarte("joueur", 0);
+        tirerCarte("joueur", 1);
+        tirerCarte("croupier", 0);
+        tirerCarte("croupier", 1);
+        bTirageInitial = true;
+    }
+
+}
+
+function tirerCarte(sRole, nNumCarte) {
+    const nCarte = Math.floor(Math.random()*13) + 1;
 
 }
 
 // Écran 3 (et final) : affichage des résultats.
 function finJeu() {
     console.log("Dans finJeu...");
-}
-
-/**
- * Simule le tirage d'une carte d'un jeu de carte (représentré par des nombres 
- * de 1 à 13 (As = 1, 2...10, Valet = 11, Reine = 12, Roi = 13)).
- * @returns {Number} Nombre aléatoire généré.
- */
-function tirerCarte() {
-    return Math.floor(Math.random()*13) + 1;
 }
 
 /**
@@ -160,7 +185,7 @@ function calculerValeurCarte(nCarte) {
  * @param {String} sTexte Texte sur le bouton.
  * @returns void;
  */
-function dessinerBouton(nPosX, nPosY, nLargeur=100, nHauteur=50, sFond = 'darkgrey', sTexte = 'Bouton') {
+function dessinerBouton(nPosX, nPosY, nLargeur = 100, nHauteur = 50, sFond = 'darkgrey', sTexte = 'Bouton') {
     oCtx.fillStyle = sFond;
     oCtx.fillRect(nPosX, nPosY, nLargeur, nHauteur, 10);
     oCtx.fillStyle = "#ffffff";
