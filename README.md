@@ -7,7 +7,10 @@
 > :construction: = en cours
 > :heavy_check_mark: = complété
 
-### Semaine 9 :construction:
+### Semaine 10 :construction:
+>Stuctures de données (suite) : application au jeu du Blackjack.
+
+### Semaine 9 :heavy_check_mark:
 >Stuctures de données : tableaux (`Array`) et objets (`Object`) JavaScript.
 
 ### Semaine 8 :heavy_check_mark:
