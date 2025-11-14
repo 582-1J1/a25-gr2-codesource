@@ -40,15 +40,29 @@ let aAnglesCartes = [0, 0, 0, 0];
 // Autres variables pour les angles de rotation de chaque cartes dans l'intro;
 
 // Écran "Partie du jeu"
+// Drapeau pour indiquer si le tirage initial a eu lieu ou pas
 let bTirageInitial = false;
+
+// Objet complexe dans lequel on conserve toutes les propriétés des cartes des
+// deux rôles (croupier et joueur).
 let oCartesTirees = {
     joueur: {
+        placement: {x: 250, y: 350},
+        position: [],
         main: []
     },
     croupier: {
+        placement: {x: 50, y: 50},
+        position: [],
         main: []
     }
 };
+
+// Test : 
+console.log("Placement en Y des cartes du croupier : ", 
+    oCartesTirees.croupier
+);
+
 
 
 /************************ Gestion des événements ******************************/
@@ -154,11 +168,19 @@ function partieJeu() {
         bTirageInitial = true;
     }
 
+    // Placer les cartes (par animation)
+    
+
 }
 
 function tirerCarte(sRole, nNumCarte) {
+    // Choisir un nombre aléqtoire entre 1 et 13
     const nCarte = Math.floor(Math.random()*13) + 1;
-
+    // Ajouter ce nombre dans la main du rôle indiqué dans sRole 
+    // à la position nNumCarte
+    oCartesTirees[sRole].main[nNumCarte] = nCarte;
+    // Assigner des positions initiales pour l'animation de cette carte
+    oCartesTirees[sRole].position[nNumCarte] = {x: 0, y: 0};
 }
 
 // Écran 3 (et final) : affichage des résultats.
