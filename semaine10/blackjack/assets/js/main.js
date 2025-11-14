@@ -6,8 +6,9 @@
 /** @type {HTMLCanvasElement} */
 const oCanvas = document.querySelector("#scene");
 const oCtx = oCanvas.getContext("2d");
-
-/******** Variables globales **************************************************/
+/******************************************************************************/
+/************************* VARIABLES GLOBALES *********************************/
+/******************************************************************************/
 // Info générale
 const oDimCanvas = {
     largeur: oCanvas.width,
@@ -63,19 +64,33 @@ console.log("Placement en Y des cartes du croupier : ",
     oCartesTirees.croupier
 );
 
-
-
-/************************ Gestion des événements ******************************/
+/******************************************************************************/
+/******************** GESTION DES ÉVENEMENTS **********************************/
+/******************************************************************************/
 // Chargement de la page.
 window.addEventListener("load", demarrer);
 // Clics dans le canvas
 oCanvas.addEventListener("click", function (evt) {
+    // Position du clic relative au canvas
+    const x = evt.offsetX;
+    const y = evt.offsetY;
 
+    // Tester l'état du jeu (intro, partie, ou fin ?)
+    if(sEtat == "partie") {
+        // Détecter le clic sur le bouton "Piocher"
+        if(x>400 && x<550 && y>540 && y<580) {
+            console.log("Bouton 'piocher' cliqué");
+            
+        }
+        else if(x>600 && x<750 && y>540 && y<580) {
+            console.log("Bouton 'rester' cliqué");
+        }
+    }
 });
 
-
+/******************************************************************************/
 /************************* FONCTIONS ******************************************/
-
+/******************************************************************************/
 function demarrer() {
     sEtat = "intro";
     nIdMinuterie = setInterval(boucleJeu, 1000 / 60);
@@ -168,9 +183,17 @@ function partieJeu() {
         bTirageInitial = true;
     }
 
-    // Placer les cartes (par animation)
+    // Déplacer les cartes (par animation)
+    // Boucler sur les tableaux des "mains" des deux roles du jeu
+    // Le joueur : 
+    for(let i=0; i<oCartesTirees.joueur.main.length; i++) {
+        deplacerCarte("joueur", i);
+    }
+    // Le croupier : 
+    for(let i=0; i<oCartesTirees.croupier.main.length; i++) {
+        deplacerCarte("croupier", i);
+    }
     
-
 }
 
 function tirerCarte(sRole, nNumCarte) {
@@ -181,6 +204,30 @@ function tirerCarte(sRole, nNumCarte) {
     oCartesTirees[sRole].main[nNumCarte] = nCarte;
     // Assigner des positions initiales pour l'animation de cette carte
     oCartesTirees[sRole].position[nNumCarte] = {x: 0, y: 0};
+}
+
+function deplacerCarte(sRole, nNumCarte) {
+    let nCarte = oCartesTirees[sRole].main[nNumCarte];
+    let oPosition = oCartesTirees[sRole].position[nNumCarte];
+    let oPlacement = oCartesTirees[sRole].placement;
+
+    // Dessiner l'image de la carte, mais attention : si c'est la deuxième
+    // carte du croupier, alors dessiner une image de dos de carte.
+    if(sRole=="croupier" && nNumCarte==1) {
+        oCtx.drawImage(oImgCarteDos, oPosition.x, oPosition.y, 67, 100);
+    }
+    else {
+        oCtx.drawImage(aImages[nCarte], oPosition.x, oPosition.y, 67, 100);
+    }
+    
+    // Incrémenter les positions x et y pour l'animation par 5 
+    // jusqu'à atteindre le placement final souhaité
+    if(oPosition.x < oPlacement.x + 45*nNumCarte) {
+        oPosition.x += 5;
+    }
+    if(oPosition.y < oPlacement.y) {
+        oPosition.y += 5;
+    }
 }
 
 // Écran 3 (et final) : affichage des résultats.
@@ -216,15 +263,3 @@ function dessinerBouton(nPosX, nPosY, nLargeur = 100, nHauteur = 50, sFond = 'da
     oCtx.textAlign = "center";
     oCtx.fillText(sTexte, nPosX + nLargeur / 2, nPosY + nHauteur / 2);
 }
-
-/*
-
-// Bouton Rester (fond rouge foncé)
-dessinerBouton(50, 300, 150, 50, "#b22222", "Rester");
-// Bouton Tirer (fond vert foncé)
-dessinerBouton(300, 300, 150, 50, "#228b22", "Tirer");
-
-// Bouton générique (test)
-dessinerBouton(10, 10);
-
-*/
