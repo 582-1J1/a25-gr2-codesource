@@ -61,6 +61,13 @@ let oCartesTirees = {
         main: []
     }
 };
+// Numéros des cartes additionnelles tirées par le joueur et le croupier
+let nNumCarteAdditionnelleJoueur = 0;
+let nNumCarteAdditionnelleCroupier = 0;
+
+// Valeurs des mains
+let nTotalJoueur = 0;
+let nTotalCroupier = 0;
 
 // Test : 
 console.log("Placement en Y des cartes du croupier : ", 
@@ -81,13 +88,14 @@ oCanvas.addEventListener("click", function (evt) {
     // Tester l'état du jeu (intro, partie, ou fin ?)
     if(sEtat == "partie") {
         // Détecter le clic sur le bouton "Piocher"
-        if(x>400 && x<550 && y>540 && y<580) {
+        if(x>400 && x<550 && y>540 && y<580 && sActionJoueur != "rester") {
             console.log("Bouton 'piocher' cliqué");
-            sActionJoueur = "piocher";
+            sActionJoueur = "piocher"; 
             
         }
         else if(x>600 && x<750 && y>540 && y<580) {
             console.log("Bouton 'rester' cliqué");
+            sActionJoueur = "rester";
         }
     }
 });
@@ -191,8 +199,12 @@ function partieJeu() {
     if(sActionJoueur == "piocher") {
         sActionJoueur = "";
         // Tirer une nouvelle carte pour le joueur
-        tirerCarte("joueur", 2)
-
+        // Déterminer son numéro (c'est le "length" du tableau "main")
+        nNumCarteAdditionnelleJoueur = oCartesTirees.joueur.main.length;
+        tirerCarte("joueur", nNumCarteAdditionnelleJoueur);
+    }
+    else if(sActionJoueur == "rester") {
+        gererTourCroupier();
     }
 
     // Déplacer les cartes (par animation)
@@ -205,7 +217,10 @@ function partieJeu() {
     for(let i=0; i<oCartesTirees.croupier.main.length; i++) {
         deplacerCarte("croupier", i);
     }
-    
+
+    // Calculer les valeurs des mains.
+    nTotalCroupier = calculerValeurMain(oCartesTirees.croupier.main);
+    nTotalJoueur = calculerValeurMain(oCartesTirees.joueur.main);
 }
 
 function tirerCarte(sRole, nNumCarte) {
@@ -216,6 +231,15 @@ function tirerCarte(sRole, nNumCarte) {
     oCartesTirees[sRole].main[nNumCarte] = nCarte;
     // Assigner des positions initiales pour l'animation de cette carte
     oCartesTirees[sRole].position[nNumCarte] = {x: 0, y: 0};
+}
+
+function gererTourCroupier() {
+    // Le croupier tire des cartes tant que sa main vaut moins que 17
+}
+
+function calculerValeurMain(aTabCartes) {
+    // Faire la somme des valeurs qui se trouvent dans le tableau aTabCartes
+    
 }
 
 function deplacerCarte(sRole, nNumCarte) {
