@@ -34,6 +34,7 @@ oImgTable.src = "assets/images/table-bg.jpg";
 // État/Boucle du jeu
 let sEtat = "";
 let nIdMinuterieBoucleJeu;
+let nIdMinuterieResultat;
 
 // Écran "Intro"
 let nPosXTexte = -300;
@@ -45,6 +46,8 @@ let aAnglesCartes = [0, 0, 0, 0];
 let bTirageInitial = false;
 // Drapeau pour déterminer quel action le joueur veut faire (il veut piocher ou rester)
 let sActionJoueur = "";
+// Drapeau pour indiquer si la carte est en déplacement ou pas
+let bCarteEnDeplacement = false;
 
 
 // Objet complexe dans lequel on conserve toutes les propriétés des cartes des
@@ -138,13 +141,15 @@ function introJeu() {
     }
     else {
         oCtx.font = "24px Arial";
-        oCtx.fillText("Appuyer sur une touche pour commencer le jeu.", oDimCanvas.centre, oDimCanvas.milieu + 50);
+        oCtx.fillText("Appuyer sur une touche pour commencer le jeu.", 
+            oDimCanvas.centre, oDimCanvas.milieu + 50);
 
         // Arrêter la minuterie
         // clearInterval(nIdMinuterieBoucleJeu);
 
         animerRotationCarte(0, aImages[13], 25);
-        animerRotationCarte(1, oImgCarteDos, -40, oDimCanvas.centre + 10, oDimCanvas.milieu + 50);
+        animerRotationCarte(1, oImgCarteDos, -40, oDimCanvas.centre + 10, 
+            oDimCanvas.milieu + 50);
         animerRotationCarte(2, oImgCarteDos, -30, -250, 300);
         animerRotationCarte(3, aImages[9], 15, 900, 250);
 
@@ -203,7 +208,7 @@ function partieJeu() {
         nNumCarteAdditionnelleJoueur = oCartesTirees.joueur.main.length;
         tirerCarte("joueur", nNumCarteAdditionnelleJoueur);
     }
-    else if(sActionJoueur == "rester") {
+    else if(sActionJoueur == "rester" && !bCarteEnDeplacement) {
         gererTourCroupier();
     }
 
@@ -217,8 +222,6 @@ function partieJeu() {
     for(let i=0; i<oCartesTirees.croupier.main.length; i++) {
         deplacerCarte("croupier", i);
     }
-
-    
 }
 
 function tirerCarte(sRole, nNumCarte) {
@@ -235,15 +238,18 @@ function tirerCarte(sRole, nNumCarte) {
     nTotalJoueur = calculerValeurMain(oCartesTirees.joueur.main);
 
     // Si le total du joueur est égal à 21 il doit "rester"
-    if(nTotalJoueur == 21) {
+    if(nTotalJoueur == 21 && !bCarteEnDeplacement) {
         sActionJoueur = "rester";
     }
-    else if(nTotalJoueur > 21) {
+    else if(nTotalJoueur > 21 && !bCarteEnDeplacement) {
+        sActionJoueur = "rester";
         sEtat = "fin";
     }
 }
 
 function gererTourCroupier() {
+    
+    
     // Le croupier tire des cartes tant que sa main vaut moins que 17
     console.log("Tour du croupier");
     if(nTotalCroupier < 17) {
@@ -282,6 +288,9 @@ function calculerValeurMain(aTabCartes) {
 }
 
 function deplacerCarte(sRole, nNumCarte) {
+    // On change la valeur du drapeau pour indiquer que la carte est en déplacement
+    bCarteEnDeplacement = true;
+
     let nCarte = oCartesTirees[sRole].main[nNumCarte];
     let oPosition = oCartesTirees[sRole].position[nNumCarte];
     let oPlacement = oCartesTirees[sRole].placement;
@@ -303,14 +312,65 @@ function deplacerCarte(sRole, nNumCarte) {
     if(oPosition.y < oPlacement.y) {
         oPosition.y += 5;
     }
+    // Tester si le déplacement est complété
+    if(oPosition.x >= oPlacement.x + 45*nNumCarte 
+            && oPosition.y >= oPlacement.y) {
+        bCarteEnDeplacement = false;
+    }
+
+    console.log("Carte en déplacement ? ", bCarteEnDeplacement);
 }
 
 // Écran 3 (et final) : affichage des résultats.
 function finJeu() {
     console.log("Dans finJeu...");
     partieJeu();
-    // clearInterval(nIdMinuterieBoucleJeu);
+
+    // Afficher résultat après un certain laps de temps
+    // afficherResultat();
+    nIdMinuterieResultat = setTimeout(afficherResultat, 2000);
 }
+
+function afficherResultat() {
+    clearInterval(nIdMinuterieBoucleJeu);
+    clearTimeout(nIdMinuterieResultat);
+    // Afficher les totaux
+    oCtx.fillStyle = "white";
+    oCtx.font = "72px Arial";
+    oCtx.fillText(nTotalCroupier, oDimCanvas.largeur - 100, 100);
+    oCtx.fillText(nTotalJoueur, 100, oDimCanvas.hauteur - 200);
+
+    // Afficher la détermination du gagnant
+    oCtx.fillRect(175, 175, 550, 150);
+
+    oCtx.font = "24px Stack Sans Notch";
+    oCtx.fillStyle = "black";
+    let sMessage = "";
+    // Tester les totaux pour déterminer le résultat
+    if(nTotalJoueur > 21) {
+        sMessage = "Vous avez crevé. Désolé ;-(";
+    } 
+    else if(nTotalJoueur == 21) {
+        sMessage = "BlackJack. Bravo !";
+    }
+    else if(nTotalJoueur > nTotalCroupier) {
+        sMessage = "Vous avez gagné. Bravo !";
+    }
+    else if(nTotalJoueur == nTotalCroupier) {
+        sMessage = "Partie égale. C'est kif-kif";
+    }
+    else if(nTotalCroupier <= 21 && nTotalJoueur < nTotalCroupier) {
+        sMessage = "Vous avez perdu. Désolé ;-(";
+    }
+    else {
+        sMessage = "Le croupier a crevé. Vous gagnez...";
+    }
+
+    oCtx.textAlign = "center";
+    oCtx.textBaseline = "middle";
+    oCtx.fillText(sMessage, oDimCanvas.centre, 225);
+}
+
 
 /**
  * Calcule la valeur d'une carte (Maximum 10).
@@ -331,7 +391,8 @@ function calculerValeurCarte(nCarte) {
  * @param {String} sTexte Texte sur le bouton.
  * @returns void;
  */
-function dessinerBouton(nPosX, nPosY, nLargeur = 100, nHauteur = 50, sFond = 'darkgrey', sTexte = 'Bouton') {
+function dessinerBouton(nPosX, nPosY, nLargeur = 100, nHauteur = 50, 
+        sFond = 'darkgrey', sTexte = 'Bouton') {
     oCtx.fillStyle = sFond;
     oCtx.fillRect(nPosX, nPosY, nLargeur, nHauteur, 10);
     oCtx.fillStyle = "#ffffff";
