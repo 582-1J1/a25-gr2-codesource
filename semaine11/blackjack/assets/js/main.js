@@ -218,9 +218,7 @@ function partieJeu() {
         deplacerCarte("croupier", i);
     }
 
-    // Calculer les valeurs des mains.
-    nTotalCroupier = calculerValeurMain(oCartesTirees.croupier.main);
-    nTotalJoueur = calculerValeurMain(oCartesTirees.joueur.main);
+    
 }
 
 function tirerCarte(sRole, nNumCarte) {
@@ -231,15 +229,56 @@ function tirerCarte(sRole, nNumCarte) {
     oCartesTirees[sRole].main[nNumCarte] = nCarte;
     // Assigner des positions initiales pour l'animation de cette carte
     oCartesTirees[sRole].position[nNumCarte] = {x: 0, y: 0};
+
+    // Mettre à jour la valeur des mains
+    nTotalCroupier = calculerValeurMain(oCartesTirees.croupier.main);
+    nTotalJoueur = calculerValeurMain(oCartesTirees.joueur.main);
+
+    // Si le total du joueur est égal à 21 il doit "rester"
+    if(nTotalJoueur == 21) {
+        sActionJoueur = "rester";
+    }
+    else if(nTotalJoueur > 21) {
+        sEtat = "fin";
+    }
 }
 
 function gererTourCroupier() {
     // Le croupier tire des cartes tant que sa main vaut moins que 17
+    console.log("Tour du croupier");
+    if(nTotalCroupier < 17) {
+        nNumCarteAdditionnelleCroupier = oCartesTirees.croupier.main.length;
+        tirerCarte("croupier", nNumCarteAdditionnelleCroupier);
+    }
+    else {
+        sEtat = "fin";
+    }
 }
 
 function calculerValeurMain(aTabCartes) {
     // Faire la somme des valeurs qui se trouvent dans le tableau aTabCartes
-    
+    console.log("Tableau de la main à calculer : ", aTabCartes);
+
+    let somme = 0;
+    // On va utiliser 3 méthodes pour parcourir les valeurs dans le tableau
+    // Méthode 1 : boucle traditionnel "for"
+    // for(let i=0; i < aTabCartes.length; i++) {
+    //     somme += calculerValeurCarte(aTabCartes[i]);
+    // }
+
+    // Méthode 2 : boucle "for...of" (code plus "expressif", et moins "impératif")
+    for (const carte of aTabCartes) {
+        somme += calculerValeurCarte(carte);
+    }
+
+    // Méthode 3 : Méthode reduce() des tableau JS (Array)
+    // Chercher par vous même ;-)
+    // somme = aTabCartes.reduce(
+    //     (prev, curr) => prev + calculerValeurCarte(curr)
+    //     , 0
+    // );
+
+    return somme;
 }
 
 function deplacerCarte(sRole, nNumCarte) {
@@ -249,7 +288,7 @@ function deplacerCarte(sRole, nNumCarte) {
 
     // Dessiner l'image de la carte, mais attention : si c'est la deuxième
     // carte du croupier, alors dessiner une image de dos de carte.
-    if(sRole=="croupier" && nNumCarte==1) {
+    if(sRole=="croupier" && nNumCarte==1 && sActionJoueur != "rester") {
         oCtx.drawImage(oImgCarteDos, oPosition.x, oPosition.y, 67, 100);
     }
     else {
@@ -269,7 +308,8 @@ function deplacerCarte(sRole, nNumCarte) {
 // Écran 3 (et final) : affichage des résultats.
 function finJeu() {
     console.log("Dans finJeu...");
-    clearInterval(nIdMinuterieBoucleJeu);
+    partieJeu();
+    // clearInterval(nIdMinuterieBoucleJeu);
 }
 
 /**
