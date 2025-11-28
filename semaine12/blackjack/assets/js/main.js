@@ -18,7 +18,8 @@ const oDimCanvas = {
 };
 
 // i18n et L12n
-// Les textes de tous les écrans du jeu dans l'objet suivant !!!!
+// Exercice 3 : stockage des textes pour les différentes langues.
+// Compléter l'objet avec les textes de tous les écrans du jeu et dans les 3 langues.
 const oTextes = {
     fr: {
         intro: "Appuyer sur une touche pour commencer le jeu.",
@@ -32,8 +33,10 @@ const oTextes = {
     }
 }
 
-// La langue à utiliser (la langue active)
-let langue = "en";
+// La langue à utiliser par défaut (la langue active par défaut)
+// Utiliser seulement les codes de langue standard à deux lettres : "fr", "en", etc.
+// Voir : https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+let langue = "fr";
 
 
 // Images
@@ -63,8 +66,8 @@ oSonCarte.volume = 0.8;
 
 // État/Boucle du jeu
 let sEtat = "intro";
-let nIdMinuterieBoucleJeu;
-let nIdMinuterieResultat;
+let nIdMinuterieBoucleJeu = null;
+let nIdMinuterieResultat = null;
 
 // Écran "Intro"
 let nPosXTexte = -300;
@@ -126,23 +129,28 @@ oCanvas.addEventListener("click", function (evt) {
 
     // Son de foule
     if (sEtat === "intro") {
+        // On joue le son de foule
         oSonFoule.play();
 
-        // Détecter le clic sur chaque bouton de langue ici...
-        
+        // Exercice 3 : Changement de langue
+        // 1) Vérifier la position du clic pour chaque bouton de langue ici...
 
+
+        // 2) Et changer la langue active (variable globale "langue") en conséquence
+
+        
     }
 
     // Tester l'état du jeu (intro, partie, ou fin ?)
     if (sEtat === "partie") {
         // Détecter le clic sur le bouton "Piocher"
         if (x > 400 && x < 550 && y > 540 && y < 580 && sActionJoueur != "rester") {
-            console.log("Bouton 'piocher' cliqué");
+            
             sActionJoueur = "piocher";
 
         }
         else if (x > 600 && x < 750 && y > 540 && y < 580) {
-            console.log("Bouton 'rester' cliqué");
+            
             sActionJoueur = "rester";
         }
     }
@@ -197,7 +205,7 @@ function reinitialiserMains() {
 
 function demarrer() {
     nIdMinuterieBoucleJeu = setInterval(boucleJeu, 1000 / 60);
-    console.log("Identifiant de la minuterie : ", nIdMinuterieBoucleJeu);
+    
 }
 
 function boucleJeu() {
@@ -215,8 +223,6 @@ function boucleJeu() {
 
 // Écran 1 : intro animée
 function introJeu() {
-    console.log("Dans introJeu...");
-
     oCtx.fillStyle = "black";
     oCtx.font = "60px Arial";
     oCtx.textAlign = "center";
@@ -253,6 +259,12 @@ function introJeu() {
             }
         });
 
+        // Exercice 3 : Dessiner les boutons de changement de langue
+        // Il faut une autre fonction plus adaptée pour dessiner ces boutons
+        // car ils vont avoir des couleurs de fond et de texte spécifiques à leurs
+        // états (actif ou pas).
+        // Pour l'instant, on utilise la fonction existante "dessinerBouton"
+        // mais ce n'est pas optimal, donc si vous savez faire mieux, n'hésitez pas !
         dessinerBouton(oDimCanvas.largeur-50, 10, 30, 30, "rgba(0, 41, 0, 1)", "FR");
         dessinerBouton(oDimCanvas.largeur-50, 50, 30, 30, "rgba(166, 172, 166, 1)", "EN");
     }
@@ -273,7 +285,7 @@ function animerRotationCarte(nItem, nCarte, angleFinal, nPosX = 0, nPosY = 0) {
 
 // Écran 2 : partie de jeu.
 function partieJeu() {
-    console.log("Dans partieJeu...");
+    
     // Image de fond (table du BlackJack)
     oCtx.drawImage(oImgTable, 0, 0, oDimCanvas.largeur, oDimCanvas.hauteur);
 
@@ -348,7 +360,7 @@ function gererTourCroupier() {
 
 
     // Le croupier tire des cartes tant que sa main vaut moins que 17
-    console.log("Tour du croupier");
+    
     if (nTotalCroupier < 17) {
         nNumCarteAdditionnelleCroupier = oCartesTirees.croupier.main.length;
         tirerCarte("croupier", nNumCarteAdditionnelleCroupier);
@@ -360,7 +372,7 @@ function gererTourCroupier() {
 
 function calculerValeurMain(aTabCartes) {
     // Faire la somme des valeurs qui se trouvent dans le tableau aTabCartes
-    console.log("Tableau de la main à calculer : ", aTabCartes);
+    
 
     let somme = 0;
     // On va utiliser 3 méthodes pour parcourir les valeurs dans le tableau
@@ -375,7 +387,7 @@ function calculerValeurMain(aTabCartes) {
     }
 
     // Méthode 3 : Méthode reduce() des tableau JS (Array)
-    // Chercher par vous même ;-)
+    // Bonus : chercher par vous même pour mieux comprendre ce code ;-)
     // somme = aTabCartes.reduce(
     //     (prev, curr) => prev + calculerValeurCarte(curr)
     //     , 0
@@ -415,23 +427,22 @@ function deplacerCarte(sRole, nNumCarte) {
         bCarteEnDeplacement = false;
     }
 
-    console.log("Carte en déplacement ? ", bCarteEnDeplacement);
+    
 }
 
 // Écran 3 (et final) : affichage des résultats.
 function finJeu() {
-    console.log("Dans finJeu...");
     partieJeu();
-
     // Afficher résultat après un certain laps de temps
-    // afficherResultat();
-    nIdMinuterieResultat = setTimeout(afficherResultat, 2000);
+    if(!nIdMinuterieResultat) {
+        nIdMinuterieResultat = setTimeout(afficherResultat, 1000);
+    }
 }
 
 function afficherResultat() {
-    
     clearInterval(nIdMinuterieBoucleJeu);
     clearTimeout(nIdMinuterieResultat);
+    nIdMinuterieResultat = null;
     // Afficher les totaux
     oCtx.fillStyle = "white";
     oCtx.font = "72px Arial";
@@ -444,8 +455,6 @@ function afficherResultat() {
     oCtx.font = "24px Stack Sans Notch";
     oCtx.fillStyle = "black";
     let sMessage = "";
-
-    // Tester les totaux pour déterminer le résultat
 
     if (nTotalJoueur > 21) {
         sMessage = "Vous avez crevé. Désolé ;-(";
@@ -486,12 +495,15 @@ function afficherResultat() {
     }
 
     // Maintenant ajuster nJetonsJoueur selon la valeur de bEtatResultat
-    if(bEtatResultat !== "fait" && bEtatResultat === true) {
+    if(bEtatResultat === true) {
         nJetonsJoueur += nMiseFixe;
         bEtatResultat = "fait";
     }
-    else if(bEtatResultat !== "fait" && bEtatResultat === false) {
+    else if(bEtatResultat === false) {
         nJetonsJoueur -= nMiseFixe;
+        bEtatResultat = "fait";
+    }
+    else if(bEtatResultat === null) {
         bEtatResultat = "fait";
     }
 

@@ -7,7 +7,13 @@
 > :construction: = en cours
 > :heavy_check_mark: = complété
 
-### Semaine 10 :construction:
+### Semaine 12 :construction:
+>Ajout des effets sonores ; réinitialisation de la partie ; score et pointage ; internationnalisation (i18n) et localisation (L12n).
+
+### Semaine 11 :heavy_check_mark:
+>Tour du croupier ; décompte ; affichage du résultat.
+
+### Semaine 10 :heavy_check_mark:
 >Stuctures de données (suite) : application au jeu du Blackjack.
 
 ### Semaine 9 :heavy_check_mark:
