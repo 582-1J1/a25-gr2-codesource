@@ -16,6 +16,26 @@ const oDimCanvas = {
     centre: oCanvas.width / 2,
     milieu: oCanvas.height / 2
 };
+
+// i18n et L12n
+// Les textes de tous les écrans du jeu dans l'objet suivant !!!!
+const oTextes = {
+    fr: {
+        intro: "Appuyer sur une touche pour commencer le jeu.",
+        btnPiocher: "Piocher",
+        btnRester: "Rester"
+    },
+    en: {
+        intro: "Press a key to start the game.",
+        btnPiocher: "Hit",
+        btnRester: "Rest"
+    }
+}
+
+// La langue à utiliser (la langue active)
+let langue = "en";
+
+
 // Images
 // Les cartes
 let aImages = [];
@@ -31,8 +51,18 @@ oImgCarteDos.src = "assets/images/dos.png";
 const oImgTable = new Image();
 oImgTable.src = "assets/images/table-bg.jpg";
 
+// Sons
+// Son ambiant à utiliser durant le déroulement du jeu
+const oSonFoule = new Audio();
+oSonFoule.src = "assets/sons/foule.mp3";
+oSonFoule.volume = 0.3;
+oSonFoule.loop = true;
+// Son pour le tirage d'une carte
+const oSonCarte = new Audio("assets/sons/carte.mp3");
+oSonCarte.volume = 0.8;
+
 // État/Boucle du jeu
-let sEtat = "";
+let sEtat = "intro";
 let nIdMinuterieBoucleJeu;
 let nIdMinuterieResultat;
 
@@ -41,7 +71,18 @@ let nPosXTexte = -300;
 let aAnglesCartes = [0, 0, 0, 0];
 // Autres variables pour les angles de rotation de chaque cartes dans l'intro;
 
+// Jetons du joueur
+// On va supposer ici que c'est fixé à 100 mais dans un jeu réaliste vous pouvez 
+// déterminer cette valeur dynamiquement.
+let nJetonsJoueur = 100;
+// Valeur de la mise pour chaque partie : on la fixe ici à 10 de la même façon
+// pour simplifier notre prototype, mais dans un jeu réaliste, le joueur peut
+// décider la valeur de la mise pour chaque partie selon les jetons disponibles.
+let nMiseFixe = 10;
+
 // Écran "Partie du jeu"
+// Drapeau pour déterminer si joueur a gagné, perdu, ou égalisé
+let bEtatResultat = null; 
 // Drapeau pour indiquer si le tirage initial a eu lieu ou pas
 let bTirageInitial = false;
 // Drapeau pour déterminer quel action le joueur veut faire (il veut piocher ou rester)
@@ -54,12 +95,12 @@ let bCarteEnDeplacement = false;
 // deux rôles (croupier et joueur).
 let oCartesTirees = {
     joueur: {
-        placement: {x: 250, y: 350},
+        placement: { x: 250, y: 350 },
         position: [],
         main: []
     },
     croupier: {
-        placement: {x: 50, y: 50},
+        placement: { x: 50, y: 50 },
         position: [],
         main: []
     }
@@ -72,11 +113,6 @@ let nNumCarteAdditionnelleCroupier = 0;
 let nTotalJoueur = 0;
 let nTotalCroupier = 0;
 
-// Test : 
-console.log("Placement en Y des cartes du croupier : ", 
-    oCartesTirees.croupier
-);
-
 /******************************************************************************/
 /******************** GESTION DES ÉVENEMENTS **********************************/
 /******************************************************************************/
@@ -88,17 +124,43 @@ oCanvas.addEventListener("click", function (evt) {
     const x = evt.offsetX;
     const y = evt.offsetY;
 
+    // Son de foule
+    if (sEtat === "intro") {
+        oSonFoule.play();
+
+        // Détecter le clic sur chaque bouton de langue ici...
+        
+
+    }
+
     // Tester l'état du jeu (intro, partie, ou fin ?)
-    if(sEtat == "partie") {
+    if (sEtat === "partie") {
         // Détecter le clic sur le bouton "Piocher"
-        if(x>400 && x<550 && y>540 && y<580 && sActionJoueur != "rester") {
+        if (x > 400 && x < 550 && y > 540 && y < 580 && sActionJoueur != "rester") {
             console.log("Bouton 'piocher' cliqué");
-            sActionJoueur = "piocher"; 
-            
+            sActionJoueur = "piocher";
+
         }
-        else if(x>600 && x<750 && y>540 && y<580) {
+        else if (x > 600 && x < 750 && y > 540 && y < 580) {
             console.log("Bouton 'rester' cliqué");
             sActionJoueur = "rester";
+        }
+    }
+
+    if (sEtat === "fin") {
+        if (x > 350 && x < 550 && y > 250 && y < 300) {
+            // Rejouer
+            // Donc : démarrer le jeu de nouveau.
+            // Plusieurs solutions possibles (pas toutes équivalentes)
+            // Solution 1 (la moins 'intelligente') : raffraîchir la page
+            // Ce n'est pas la bonne solution ici, car veux garder en mémoire 
+            // les gains/pertes du joueur. Et aussi, je ne veux pas retourner 
+            // à l'écran d'intro...
+            // window.location.reload();
+
+            reinitialiserMains();
+            demarrer();
+
         }
     }
 });
@@ -106,8 +168,34 @@ oCanvas.addEventListener("click", function (evt) {
 /******************************************************************************/
 /************************* FONCTIONS ******************************************/
 /******************************************************************************/
+function reinitialiserMains() {
+    sEtat = "partie";
+   
+    bEtatResultat = null;
+    bTirageInitial = false;
+    sActionJoueur = "";
+    bCarteEnDeplacement = false;
+    oCartesTirees = {
+        joueur: {
+            placement: { x: 250, y: 350 },
+            position: [],
+            main: []
+        },
+        croupier: {
+            placement: { x: 50, y: 50 },
+            position: [],
+            main: []
+        }
+    };
+    nNumCarteAdditionnelleJoueur = 0;
+    nNumCarteAdditionnelleCroupier = 0;
+
+    nTotalJoueur = 0;
+    nTotalCroupier = 0;
+}
+
+
 function demarrer() {
-    sEtat = "intro";
     nIdMinuterieBoucleJeu = setInterval(boucleJeu, 1000 / 60);
     console.log("Identifiant de la minuterie : ", nIdMinuterieBoucleJeu);
 }
@@ -141,14 +229,14 @@ function introJeu() {
     }
     else {
         oCtx.font = "24px Arial";
-        oCtx.fillText("Appuyer sur une touche pour commencer le jeu.", 
+        oCtx.fillText(oTextes[langue].intro,
             oDimCanvas.centre, oDimCanvas.milieu + 50);
 
         // Arrêter la minuterie
         // clearInterval(nIdMinuterieBoucleJeu);
 
         animerRotationCarte(0, aImages[13], 25);
-        animerRotationCarte(1, oImgCarteDos, -40, oDimCanvas.centre + 10, 
+        animerRotationCarte(1, oImgCarteDos, -40, oDimCanvas.centre + 10,
             oDimCanvas.milieu + 50);
         animerRotationCarte(2, oImgCarteDos, -30, -250, 300);
         animerRotationCarte(3, aImages[9], 15, 900, 250);
@@ -164,6 +252,9 @@ function introJeu() {
                 sEtat = "partie";
             }
         });
+
+        dessinerBouton(oDimCanvas.largeur-50, 10, 30, 30, "rgba(0, 41, 0, 1)", "FR");
+        dessinerBouton(oDimCanvas.largeur-50, 50, 30, 30, "rgba(166, 172, 166, 1)", "EN");
     }
 }
 
@@ -186,13 +277,16 @@ function partieJeu() {
     // Image de fond (table du BlackJack)
     oCtx.drawImage(oImgTable, 0, 0, oDimCanvas.largeur, oDimCanvas.hauteur);
 
+    // Dessiner les jetons disponibles du joueur
+    oCtx.fillText(nJetonsJoueur, oDimCanvas.largeur-50, oDimCanvas.hauteur-40);
+
     // Les boutons "piocher" et "rester"
-    dessinerBouton(400, 540, 150, 40, "#024802ff", "Piocher");
-    dessinerBouton(600, 540, 150, 40, "#8f1803ff", "Rester");
+    dessinerBouton(400, 540, 150, 40, "#024802ff", oTextes[langue].btnPiocher);
+    dessinerBouton(600, 540, 150, 40, "#8f1803ff", oTextes[langue].btnRester);
 
     // Tirage initiale : une seule fois !!!!
     // 2 cartes pour le joueur et 2 cartes pour le croupier
-    if(bTirageInitial==false) {
+    if (bTirageInitial == false) {
         tirerCarte("joueur", 0);
         tirerCarte("joueur", 1);
         tirerCarte("croupier", 0);
@@ -201,58 +295,61 @@ function partieJeu() {
     }
 
     // Tirage successif : SI le joueur a fait une action ("piocher" ou "rester")
-    if(sActionJoueur == "piocher") {
+    if (sActionJoueur == "piocher") {
         sActionJoueur = "";
         // Tirer une nouvelle carte pour le joueur
         // Déterminer son numéro (c'est le "length" du tableau "main")
         nNumCarteAdditionnelleJoueur = oCartesTirees.joueur.main.length;
         tirerCarte("joueur", nNumCarteAdditionnelleJoueur);
     }
-    else if(sActionJoueur == "rester" && !bCarteEnDeplacement) {
+    else if (sActionJoueur == "rester" && !bCarteEnDeplacement) {
         gererTourCroupier();
     }
 
     // Déplacer les cartes (par animation)
     // Boucler sur les tableaux des "mains" des deux roles du jeu
     // Le joueur : 
-    for(let i=0; i<oCartesTirees.joueur.main.length; i++) {
+    for (let i = 0; i < oCartesTirees.joueur.main.length; i++) {
         deplacerCarte("joueur", i);
     }
     // Le croupier : 
-    for(let i=0; i<oCartesTirees.croupier.main.length; i++) {
+    for (let i = 0; i < oCartesTirees.croupier.main.length; i++) {
         deplacerCarte("croupier", i);
     }
 }
 
 function tirerCarte(sRole, nNumCarte) {
+    // Son pour le tirage de carte
+    oSonCarte.play();
+
     // Choisir un nombre aléqtoire entre 1 et 13
-    const nCarte = Math.floor(Math.random()*13) + 1;
+    const nCarte = Math.floor(Math.random() * 13) + 1;
     // Ajouter ce nombre dans la main du rôle indiqué dans sRole 
     // à la position nNumCarte
     oCartesTirees[sRole].main[nNumCarte] = nCarte;
     // Assigner des positions initiales pour l'animation de cette carte
-    oCartesTirees[sRole].position[nNumCarte] = {x: 0, y: 0};
+    oCartesTirees[sRole].position[nNumCarte] = { x: 0, y: 0 };
 
     // Mettre à jour la valeur des mains
     nTotalCroupier = calculerValeurMain(oCartesTirees.croupier.main);
     nTotalJoueur = calculerValeurMain(oCartesTirees.joueur.main);
 
     // Si le total du joueur est égal à 21 il doit "rester"
-    if(nTotalJoueur == 21 && !bCarteEnDeplacement) {
+    if (nTotalJoueur == 21 && !bCarteEnDeplacement) {
         sActionJoueur = "rester";
     }
-    else if(nTotalJoueur > 21 && !bCarteEnDeplacement) {
+    else if (nTotalJoueur > 21 && !bCarteEnDeplacement) {
         sActionJoueur = "rester";
         sEtat = "fin";
     }
 }
 
 function gererTourCroupier() {
-    
-    
+
+
     // Le croupier tire des cartes tant que sa main vaut moins que 17
     console.log("Tour du croupier");
-    if(nTotalCroupier < 17) {
+    if (nTotalCroupier < 17) {
         nNumCarteAdditionnelleCroupier = oCartesTirees.croupier.main.length;
         tirerCarte("croupier", nNumCarteAdditionnelleCroupier);
     }
@@ -297,24 +394,24 @@ function deplacerCarte(sRole, nNumCarte) {
 
     // Dessiner l'image de la carte, mais attention : si c'est la deuxième
     // carte du croupier, alors dessiner une image de dos de carte.
-    if(sRole=="croupier" && nNumCarte==1 && sActionJoueur != "rester") {
+    if (sRole == "croupier" && nNumCarte == 1 && sActionJoueur != "rester") {
         oCtx.drawImage(oImgCarteDos, oPosition.x, oPosition.y, 67, 100);
     }
     else {
         oCtx.drawImage(aImages[nCarte], oPosition.x, oPosition.y, 67, 100);
     }
-    
+
     // Incrémenter les positions x et y pour l'animation par 5 
     // jusqu'à atteindre le placement final souhaité
-    if(oPosition.x < oPlacement.x + 45*nNumCarte) {
+    if (oPosition.x < oPlacement.x + 45 * nNumCarte) {
         oPosition.x += 5;
     }
-    if(oPosition.y < oPlacement.y) {
+    if (oPosition.y < oPlacement.y) {
         oPosition.y += 5;
     }
     // Tester si le déplacement est complété
-    if(oPosition.x >= oPlacement.x + 45*nNumCarte 
-            && oPosition.y >= oPlacement.y) {
+    if (oPosition.x >= oPlacement.x + 45 * nNumCarte
+        && oPosition.y >= oPlacement.y) {
         bCarteEnDeplacement = false;
     }
 
@@ -332,6 +429,7 @@ function finJeu() {
 }
 
 function afficherResultat() {
+    
     clearInterval(nIdMinuterieBoucleJeu);
     clearTimeout(nIdMinuterieResultat);
     // Afficher les totaux
@@ -346,29 +444,64 @@ function afficherResultat() {
     oCtx.font = "24px Stack Sans Notch";
     oCtx.fillStyle = "black";
     let sMessage = "";
+
     // Tester les totaux pour déterminer le résultat
-    if(nTotalJoueur > 21) {
+
+    if (nTotalJoueur > 21) {
         sMessage = "Vous avez crevé. Désolé ;-(";
-    } 
-    else if(nTotalJoueur == 21) {
+        if(bEtatResultat !== "fait") {
+            bEtatResultat = false;
+        }
+        
+    }
+    else if (nTotalJoueur == 21) {
         sMessage = "BlackJack. Bravo !";
+        if(bEtatResultat !== "fait") {
+            bEtatResultat = true;
+        }
     }
-    else if(nTotalJoueur > nTotalCroupier) {
+    else if (nTotalJoueur > nTotalCroupier) {
         sMessage = "Vous avez gagné. Bravo !";
+        if(bEtatResultat !== "fait") {
+            bEtatResultat = true;
+        }
     }
-    else if(nTotalJoueur == nTotalCroupier) {
+    else if (nTotalJoueur == nTotalCroupier) {
         sMessage = "Partie égale. C'est kif-kif";
+        if(bEtatResultat !== "fait") {
+            bEtatResultat = null;
+        }
     }
-    else if(nTotalCroupier <= 21 && nTotalJoueur < nTotalCroupier) {
+    else if (nTotalCroupier <= 21 && nTotalJoueur < nTotalCroupier) {
         sMessage = "Vous avez perdu. Désolé ;-(";
+        if(bEtatResultat !== "fait") {
+            bEtatResultat = false;
+        }
     }
     else {
         sMessage = "Le croupier a crevé. Vous gagnez...";
+        if(bEtatResultat !== "fait") {
+            bEtatResultat = true;
+        }
+    }
+
+    // Maintenant ajuster nJetonsJoueur selon la valeur de bEtatResultat
+    if(bEtatResultat !== "fait" && bEtatResultat === true) {
+        nJetonsJoueur += nMiseFixe;
+        bEtatResultat = "fait";
+    }
+    else if(bEtatResultat !== "fait" && bEtatResultat === false) {
+        nJetonsJoueur -= nMiseFixe;
+        bEtatResultat = "fait";
     }
 
     oCtx.textAlign = "center";
     oCtx.textBaseline = "middle";
     oCtx.fillText(sMessage, oDimCanvas.centre, 225);
+
+    // Afficher le bouton "Rejouer"
+    dessinerBouton(350, 250, 200, 50, "orange", "Rejouer");
+
 }
 
 
@@ -391,8 +524,8 @@ function calculerValeurCarte(nCarte) {
  * @param {String} sTexte Texte sur le bouton.
  * @returns void;
  */
-function dessinerBouton(nPosX, nPosY, nLargeur = 100, nHauteur = 50, 
-        sFond = 'darkgrey', sTexte = 'Bouton') {
+function dessinerBouton(nPosX, nPosY, nLargeur = 100, nHauteur = 50,
+    sFond = 'darkgrey', sTexte = 'Bouton') {
     oCtx.fillStyle = sFond;
     oCtx.fillRect(nPosX, nPosY, nLargeur, nHauteur, 10);
     oCtx.fillStyle = "#ffffff";
