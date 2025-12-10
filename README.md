@@ -7,7 +7,10 @@
 > :construction: = en cours
 > :heavy_check_mark: = complété
 
-### Semaine 12 :construction:
+### Semaine 13 :heavy_check_mark:
+>Internationnalisation complétée (exercice 3).
+
+### Semaine 12 :heavy_check_mark:
 >Ajout des effets sonores ; réinitialisation de la partie ; score et pointage ; internationnalisation (i18n) et localisation (L12n).
 
 ### Semaine 11 :heavy_check_mark:

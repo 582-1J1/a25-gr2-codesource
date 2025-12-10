@@ -22,14 +22,43 @@ const oDimCanvas = {
 // Compléter l'objet avec les textes de tous les écrans du jeu et dans les 3 langues.
 const oTextes = {
     fr: {
+        titre: "B L A C K J A C K",
         intro: "Appuyer sur une touche pour commencer le jeu.",
         btnPiocher: "Piocher",
-        btnRester: "Rester"
+        btnRester: "Rester",
+        msgCrevé: "Vous avez crevé. Désolé ;-(",
+        msgBlackjack: "BlackJack. Bravo !",
+        msgGagné: "Vous avez gagné. Bravo !",
+        msgEgal: "Partie égale. C'est kif-kif",
+        msgPerdu: "Vous avez perdu. Désolé ;-(",
+        msgCroupierCrevé: "Le croupier a crevé. Vous gagnez...",
+        btnRejouer: "Rejouer"
     },
     en: {
+        titre: "B L A C K J A C K",
         intro: "Press a key to start the game.",
         btnPiocher: "Hit",
-        btnRester: "Rest"
+        btnRester: "Stand",
+        msgCrevé: "You busted. Sorry ;-(",
+        msgBlackjack: "BlackJack. Great!",
+        msgGagné: "You won. Great!",
+        msgEgal: "Tie. It's a draw.",
+        msgPerdu: "You lost. Sorry ;-(",
+        msgCroupierCrevé: "Dealer busted. You win...",
+        btnRejouer: "Play Again"
+    },
+    es: {
+        titre: "B L A C K J A C K",
+        intro: "Presione una tecla para comenzar el juego.",
+        btnPiocher: "Pedir",
+        btnRester: "Quedarse",
+        msgCrevé: "Te pasaste. Lo siento ;-(",
+        msgBlackjack: "BlackJack. ¡Bravo!",
+        msgGagné: "Ganaste. ¡Bravo!",
+        msgEgal: "Empate. Es un empate.",
+        msgPerdu: "Perdiste. Lo siento ;-(",
+        msgCroupierCrevé: "Crupier se pasó. ¡Ganas!...",
+        btnRejouer: "Jugar de Nuevo"
     }
 }
 
@@ -134,23 +163,22 @@ oCanvas.addEventListener("click", function (evt) {
 
         // Exercice 3 : Changement de langue
         // 1) Vérifier la position du clic pour chaque bouton de langue ici...
-
-
-        // 2) Et changer la langue active (variable globale "langue") en conséquence
-
-        
+        for(let $langueCode in oTextes) {
+            let nPosX = 50 + (Object.keys(oTextes).indexOf($langueCode) * 60);
+            let nPosY = oDimCanvas.hauteur - 70;
+            if (x > nPosX && x < nPosX + 40 && y > nPosY && y < nPosY + 40) {
+                langue = $langueCode;
+            }
+        }        
     }
 
     // Tester l'état du jeu (intro, partie, ou fin ?)
     if (sEtat === "partie") {
         // Détecter le clic sur le bouton "Piocher"
         if (x > 400 && x < 550 && y > 540 && y < 580 && sActionJoueur != "rester") {
-            
             sActionJoueur = "piocher";
-
         }
-        else if (x > 600 && x < 750 && y > 540 && y < 580) {
-            
+        else if (x > 600 && x < 750 && y > 540 && y < 580) { 
             sActionJoueur = "rester";
         }
     }
@@ -165,10 +193,11 @@ oCanvas.addEventListener("click", function (evt) {
             // les gains/pertes du joueur. Et aussi, je ne veux pas retourner 
             // à l'écran d'intro...
             // window.location.reload();
-
+            // Solution 2 (meilleure) : réinitialiser toutes les variables
+            // globales à leurs valeurs initiales.
             reinitialiserMains();
+            // ... puis redémarrer la boucle du jeu
             demarrer();
-
         }
     }
 });
@@ -176,6 +205,11 @@ oCanvas.addEventListener("click", function (evt) {
 /******************************************************************************/
 /************************* FONCTIONS ******************************************/
 /******************************************************************************/
+
+/**
+ * Réinitialise les variables globales pour une nouvelle partie.
+ * @return {void}
+ */
 function reinitialiserMains() {
     sEtat = "partie";
    
@@ -202,12 +236,19 @@ function reinitialiserMains() {
     nTotalCroupier = 0;
 }
 
-
+/**
+ * Démarre la boucle principale du jeu.
+ * @returns void;
+ */
 function demarrer() {
     nIdMinuterieBoucleJeu = setInterval(boucleJeu, 1000 / 60);
     
 }
 
+/**
+ * Boucle principale du jeu.
+ * @returns void;
+ */
 function boucleJeu() {
     oCtx.clearRect(0, 0, oDimCanvas.largeur, oDimCanvas.hauteur);
     if (sEtat == "intro") {
@@ -221,7 +262,10 @@ function boucleJeu() {
     }
 }
 
-// Écran 1 : intro animée
+/**
+ * Écran 1 : intro du jeu.
+ * @returns void;
+ */
 function introJeu() {
     oCtx.fillStyle = "black";
     oCtx.font = "60px Arial";
@@ -249,27 +293,54 @@ function introJeu() {
 
         // Touches clavier
         // Gérer l'événement appuyer sur une touche
-        // document.addEventListener("keypress", () => sEtat = "partie");
-        // document.addEventListener("keypress", function() {
+        
+        // Premier exemple : fonction fléchée et n'importe quelle touche.
+        // document.addEventListener("keyup", () => sEtat = "partie");
+        
+        // Deuxième exemple : fonction anonyme et n'importe quelle touche.
+        // document.addEventListener("keyup", function() {
         //     sEtat = "partie"
         // });
-        document.addEventListener("keypress", function (evt) {
+
+        // Troisième exemple : fonction anonyme et touche spécifique (espace).
+        document.addEventListener("keyup", function (evt) {
             if (sEtat == "intro" && evt.code == "Space") {
                 sEtat = "partie";
             }
         });
 
-        // Exercice 3 : Dessiner les boutons de changement de langue
-        // Il faut une autre fonction plus adaptée pour dessiner ces boutons
-        // car ils vont avoir des couleurs de fond et de texte spécifiques à leurs
-        // états (actif ou pas).
-        // Pour l'instant, on utilise la fonction existante "dessinerBouton"
-        // mais ce n'est pas optimal, donc si vous savez faire mieux, n'hésitez pas !
-        dessinerBouton(oDimCanvas.largeur-50, 10, 30, 30, "rgba(0, 41, 0, 1)", "FR");
-        dessinerBouton(oDimCanvas.largeur-50, 50, 30, 30, "rgba(166, 172, 166, 1)", "EN");
+        afficherMenuLangues();
     }
 }
 
+/**
+ * Affiche le menu de sélection des langues.
+ * @returns void;
+ */
+function afficherMenuLangues() {
+    // Exercice 3 : Dessiner les boutons de changement de langue
+    // Il faut une autre fonction plus adaptée pour dessiner ces boutons
+    // car ils vont avoir des couleurs de fond et de texte spécifiques à leurs
+    // états (actif ou pas).
+    // Pour l'instant, on utilise la fonction existante "dessinerBouton"
+    // mais ce n'est pas optimal, donc si vous savez faire mieux, n'hésitez pas !
+    for(let $langueCode in oTextes) {
+        let nPosX = 50 + (Object.keys(oTextes).indexOf($langueCode) * 60);
+        let nPosY = oDimCanvas.hauteur - 70;
+        let sFond = ($langueCode === langue) ? "darkgreen" : "grey";
+        let sTexte = $langueCode.toUpperCase();
+        dessinerBouton(nPosX, nPosY, 40, 40, sFond, sTexte);
+    }
+}
+
+/**
+ * Animation de la rotation d'une carte.
+ * @param {Number} nItem Numéro de la carte
+ * @param {Number} nCarte Valeur de la carte
+ * @param {Number} angleFinal Angle final de la rotation
+ * @param {Number} nPosX Position en X de la carte
+ * @param {Number} nPosY Position en Y de la carte
+ */
 function animerRotationCarte(nItem, nCarte, angleFinal, nPosX = 0, nPosY = 0) {
     oCtx.save();
     oCtx.rotate(aAnglesCartes[nItem] * Math.PI / 180);
@@ -283,7 +354,10 @@ function animerRotationCarte(nItem, nCarte, angleFinal, nPosX = 0, nPosY = 0) {
     oCtx.restore()
 }
 
-// Écran 2 : partie de jeu.
+/**
+ * Écran 2 : partie du jeu.
+ * @returns void;
+ */
 function partieJeu() {
     
     // Image de fond (table du BlackJack)
@@ -330,6 +404,11 @@ function partieJeu() {
     }
 }
 
+/**
+ * Tirer une carte pour un rôle donné (joueur ou croupier)
+ * @param {String} sRole Joueur ou Croupier
+ * @param {Number} nNumCarte Numéro de la carte
+ */
 function tirerCarte(sRole, nNumCarte) {
     // Son pour le tirage de carte
     oSonCarte.play();
@@ -356,11 +435,12 @@ function tirerCarte(sRole, nNumCarte) {
     }
 }
 
+/**
+ * Gère le tour du croupier.
+ * @returns void;
+ */
 function gererTourCroupier() {
-
-
     // Le croupier tire des cartes tant que sa main vaut moins que 17
-    
     if (nTotalCroupier < 17) {
         nNumCarteAdditionnelleCroupier = oCartesTirees.croupier.main.length;
         tirerCarte("croupier", nNumCarteAdditionnelleCroupier);
@@ -370,10 +450,13 @@ function gererTourCroupier() {
     }
 }
 
+/**
+ * Calculer la valeur totale d'une main (somme des valeurs des cartes).
+ * @param {Array} aTabCartes Tableau des cartes dans une main
+ * @returns Number La somme des valeurs des cartes
+ */
 function calculerValeurMain(aTabCartes) {
     // Faire la somme des valeurs qui se trouvent dans le tableau aTabCartes
-    
-
     let somme = 0;
     // On va utiliser 3 méthodes pour parcourir les valeurs dans le tableau
     // Méthode 1 : boucle traditionnel "for"
@@ -382,20 +465,23 @@ function calculerValeurMain(aTabCartes) {
     // }
 
     // Méthode 2 : boucle "for...of" (code plus "expressif", et moins "impératif")
+    // C'est la méthode choisie ici et que je préfère pour des débuts en JS.
     for (const carte of aTabCartes) {
         somme += calculerValeurCarte(carte);
     }
 
-    // Méthode 3 : Méthode reduce() des tableau JS (Array)
+    // Méthode 3 : Méthode reduce() des tableaux JS (Array)
     // Bonus : chercher par vous même pour mieux comprendre ce code ;-)
-    // somme = aTabCartes.reduce(
-    //     (prev, curr) => prev + calculerValeurCarte(curr)
-    //     , 0
-    // );
+    // somme = aTabCartes.reduce((prev, curr) => prev + calculerValeurCarte(curr), 0);
 
     return somme;
 }
 
+/**
+ * Déplacer une carte pour un rôle donné (joueur ou croupier)
+ * @param {String} sRole Joueur ou Croupier
+ * @param {Number} nNumCarte Numéro de la carte
+ */
 function deplacerCarte(sRole, nNumCarte) {
     // On change la valeur du drapeau pour indiquer que la carte est en déplacement
     bCarteEnDeplacement = true;
@@ -426,11 +512,11 @@ function deplacerCarte(sRole, nNumCarte) {
         && oPosition.y >= oPlacement.y) {
         bCarteEnDeplacement = false;
     }
-
-    
 }
 
-// Écran 3 (et final) : affichage des résultats.
+/** Écran 3 : fin du jeu.
+ * @returns void;
+ */
 function finJeu() {
     partieJeu();
     // Afficher résultat après un certain laps de temps
@@ -439,6 +525,9 @@ function finJeu() {
     }
 }
 
+/** Afficher le résultat de la partie.
+ * @returns void;
+ */
 function afficherResultat() {
     clearInterval(nIdMinuterieBoucleJeu);
     clearTimeout(nIdMinuterieResultat);
@@ -457,38 +546,38 @@ function afficherResultat() {
     let sMessage = "";
 
     if (nTotalJoueur > 21) {
-        sMessage = "Vous avez crevé. Désolé ;-(";
+        sMessage = oTextes[langue].msgCrevé;
         if(bEtatResultat !== "fait") {
             bEtatResultat = false;
         }
         
     }
     else if (nTotalJoueur == 21) {
-        sMessage = "BlackJack. Bravo !";
+        sMessage = oTextes[langue].msgBlackjack;
         if(bEtatResultat !== "fait") {
             bEtatResultat = true;
         }
     }
     else if (nTotalJoueur > nTotalCroupier) {
-        sMessage = "Vous avez gagné. Bravo !";
+        sMessage = oTextes[langue].msgGagné;
         if(bEtatResultat !== "fait") {
             bEtatResultat = true;
         }
     }
     else if (nTotalJoueur == nTotalCroupier) {
-        sMessage = "Partie égale. C'est kif-kif";
+        sMessage = oTextes[langue].msgEgal;
         if(bEtatResultat !== "fait") {
             bEtatResultat = null;
         }
     }
     else if (nTotalCroupier <= 21 && nTotalJoueur < nTotalCroupier) {
-        sMessage = "Vous avez perdu. Désolé ;-(";
+        sMessage = oTextes[langue].msgPerdu;
         if(bEtatResultat !== "fait") {
             bEtatResultat = false;
         }
     }
     else {
-        sMessage = "Le croupier a crevé. Vous gagnez...";
+        sMessage = oTextes[langue].msgCroupierCrevé;
         if(bEtatResultat !== "fait") {
             bEtatResultat = true;
         }
@@ -512,8 +601,7 @@ function afficherResultat() {
     oCtx.fillText(sMessage, oDimCanvas.centre, 225);
 
     // Afficher le bouton "Rejouer"
-    dessinerBouton(350, 250, 200, 50, "orange", "Rejouer");
-
+    dessinerBouton(350, 250, 200, 50, "orange", oTextes[langue].btnRejouer);
 }
 
 
