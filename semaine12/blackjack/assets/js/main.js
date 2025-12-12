@@ -122,6 +122,10 @@ let sActionJoueur = "";
 // Drapeau pour indiquer si la carte est en déplacement ou pas
 let bCarteEnDeplacement = false;
 
+// Les jeux de cartes
+const nNbCartes = 52*7; // 7 jeux de cartes
+let aJeuxCartes = [...Array(nNbCartes).keys()].map(i => i%13 + 1);
+
 
 // Objet complexe dans lequel on conserve toutes les propriétés des cartes des
 // deux rôles (croupier et joueur).
@@ -414,7 +418,9 @@ function tirerCarte(sRole, nNumCarte) {
     oSonCarte.play();
 
     // Choisir un nombre aléqtoire entre 1 et 13
-    const nCarte = Math.floor(Math.random() * 13) + 1;
+    const nCarte = aJeuxCartes.splice(Math.floor(Math.random() * aJeuxCartes.length), 1)[0];
+    console.log("Jeux de cartes restant : ", aJeuxCartes);
+    
     // Ajouter ce nombre dans la main du rôle indiqué dans sRole 
     // à la position nNumCarte
     oCartesTirees[sRole].main[nNumCarte] = nCarte;
