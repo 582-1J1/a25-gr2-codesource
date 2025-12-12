@@ -62,9 +62,9 @@ const oTextes = {
         msgEgal: "Empate. Es un empate.",
         msgPerdu: "Perdiste. Lo siento ;-(",
         msgCroupierCrevé: "Crupier se pasó. ¡Ganas!...",
-        msgJetonsEpuises: "Tu deniateres jetons",
+        msgJetonsEpuises: "Te quedaste sin fichas",
         btnRejouer: "Jugar de Nuevo",
-        btnRecommencer: "Retournare ala Intro"
+        btnRecommencer: "Volver a la Introducción"
     }
 }
 

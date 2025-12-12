@@ -1,0 +1,25 @@
+* {
+    box-sizing: border-box;   
+}
+
+html {
+    height: 100vh;
+    margin: 0;
+}
+
+body {
+    margin: 0;
+    background: #e9ecef;
+    /* Pour centrer le contenu horizontalement et verticalement */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+#scene {
+    background: #f8f9fa;
+    border: 20px solid #333;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}

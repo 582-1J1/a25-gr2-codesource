@@ -24,6 +24,6 @@ Ces quelques questions ne sont que des exemples que de types de questions qui se
 
 ## Question 4 - Gérez la fin des `jetons` du joueur
 -   Question plus difficile où vous devez réfléchir aux étapes requises pour la solution
--   Si le joueur n'a plus de jetons, réinitialisez le jeu à l'état initial (`retoutIntro` --> `true`)
+-   Si le joueur n'a plus de jetons, affichez un message l'avertissant qu'il n'a plus de jetons pour jouer et un bouton servant à recommencer le jeu (donc réinitialiser le jeu à l'état initial)
 
 > **Remarquez que Vous n'avez pas la permission d'utiliser l'intelligence artificielle pour l'examen final. Tout soupçon d'utilisation de l'IA entraînera la note 0 sur l'examen.**

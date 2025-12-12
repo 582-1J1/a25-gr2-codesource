@@ -7,8 +7,14 @@
 > :construction: = en cours
 > :heavy_check_mark: = complété
 
+### Semaine 15 :heavy_check_mark:
+>Production (TP/Volet 2). Examen final (18 décembre)
+
+### Semaine 14 :heavy_check_mark:
+>Production (TP/Volet 2) et préparation pour l'examen (12 décembre).
+
 ### Semaine 13 :heavy_check_mark:
->Internationnalisation complétée (exercice 3).
+>Internationnalisation complétée (exercice 3). Production (TP/Volet 2).
 
 ### Semaine 12 :heavy_check_mark:
 >Ajout des effets sonores ; réinitialisation de la partie ; score et pointage ; internationnalisation (i18n) et localisation (L12n).
